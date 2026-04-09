@@ -5,13 +5,24 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "dev:server": "turbo -F server dev",
+    "dev:web": "turbo -F web dev",
     "lint": "turbo lint",
     "format": "turbo format",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "db:generate": "turbo -F @workspace/env typecheck && turbo -F @workspace/database db:generate",
+    "db:push": "turbo -F @workspace/env typecheck && turbo -F @workspace/database db:push",
+    "db:migrate": "turbo -F @workspace/env typecheck && turbo -F @workspace/database db:migrate",
+    "db:studio": "turbo -F @workspace/env typecheck && turbo -F @workspace/database db:studio"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
+    "@types/node": "^25.1.0",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "turbo": "^2.8.17",
