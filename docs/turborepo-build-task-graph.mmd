@@ -1,0 +1,35 @@
+flowchart LR
+    apiBuild["@workspace/api#build"] --> authBuild["@workspace/auth#build"]
+    apiBuild --> databaseBuild["@workspace/database#build"]
+    apiBuild --> tsConfigBuild["@workspace/typescript-config#build"]
+
+    authBuild --> databaseBuild
+    authBuild --> envBuild["@workspace/env#build"]
+    authBuild --> tsConfigBuild
+
+    databaseBuild --> envBuild
+    databaseBuild --> tsConfigBuild
+
+    envBuild --> tsConfigBuild
+
+    eslintBuild["@workspace/eslint-config#build"] --> root["root"]
+    tsConfigBuild --> root
+
+    uiBuild["@workspace/ui#build"] --> eslintBuild
+    uiBuild --> tsConfigBuild
+
+    adminBuild["admin#build"] --> eslintBuild
+    adminBuild --> tsConfigBuild
+    adminBuild --> uiBuild
+
+    serverBuild["server#build"] --> apiBuild
+    serverBuild --> authBuild
+    serverBuild --> envBuild
+    serverBuild --> tsConfigBuild
+
+    webBuild["web#build"] --> apiBuild
+    webBuild --> authBuild
+    webBuild --> envBuild
+    webBuild --> eslintBuild
+    webBuild --> tsConfigBuild
+    webBuild --> uiBuild

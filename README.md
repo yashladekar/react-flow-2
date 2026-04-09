@@ -61,11 +61,27 @@ docker compose down
 pnpm dev
 pnpm dev:server
 pnpm dev:web
+pnpm graph
+pnpm graph:build
 pnpm typecheck
 pnpm db:generate
 pnpm db:push
 pnpm db:migrate
 pnpm db:studio
+```
+
+## Graphs
+
+Open Turbo's official package graph UI:
+
+```bash
+pnpm graph
+```
+
+Generate a build task graph as `graph.html` in the repo root:
+
+```bash
+pnpm graph:build
 ```
 
 ## Shared UI components

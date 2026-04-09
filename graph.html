@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Graph</title>
+</head>
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/viz.js@2.1.2-pre.1/viz.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/viz.js@2.1.2-pre.1/full.render.js"></script>
+  <script>
+const s = `
+digraph {
+	compound = "true"
+	newrank = "true"
+	subgraph "root" {
+		"[root] @workspace/api#build" -> "[root] @workspace/auth#build"
+		"[root] @workspace/api#build" -> "[root] @workspace/database#build"
+		"[root] @workspace/api#build" -> "[root] @workspace/typescript-config#build"
+		"[root] @workspace/auth#build" -> "[root] @workspace/database#build"
+		"[root] @workspace/auth#build" -> "[root] @workspace/env#build"
+		"[root] @workspace/auth#build" -> "[root] @workspace/typescript-config#build"
+		"[root] @workspace/database#build" -> "[root] @workspace/env#build"
+		"[root] @workspace/database#build" -> "[root] @workspace/typescript-config#build"
+		"[root] @workspace/env#build" -> "[root] @workspace/typescript-config#build"
+		"[root] @workspace/eslint-config#build" -> "[root] ___ROOT___"
+		"[root] @workspace/typescript-config#build" -> "[root] ___ROOT___"
+		"[root] @workspace/ui#build" -> "[root] @workspace/eslint-config#build"
+		"[root] @workspace/ui#build" -> "[root] @workspace/typescript-config#build"
+		"[root] admin#build" -> "[root] @workspace/eslint-config#build"
+		"[root] admin#build" -> "[root] @workspace/typescript-config#build"
+		"[root] admin#build" -> "[root] @workspace/ui#build"
+		"[root] server#build" -> "[root] @workspace/api#build"
+		"[root] server#build" -> "[root] @workspace/auth#build"
+		"[root] server#build" -> "[root] @workspace/env#build"
+		"[root] server#build" -> "[root] @workspace/typescript-config#build"
+		"[root] web#build" -> "[root] @workspace/api#build"
+		"[root] web#build" -> "[root] @workspace/auth#build"
+		"[root] web#build" -> "[root] @workspace/env#build"
+		"[root] web#build" -> "[root] @workspace/eslint-config#build"
+		"[root] web#build" -> "[root] @workspace/typescript-config#build"
+		"[root] web#build" -> "[root] @workspace/ui#build"
+	}
+}
+
+`.replace(/\_\_\_ROOT\_\_\_/g, "Root").replace(/\[root\]/g, "");new Viz().renderSVGElement(s).then(el => document.body.appendChild(el)).catch(e => console.error(e));
+  </script>
+</body>
+</html>

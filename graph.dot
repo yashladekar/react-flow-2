@@ -1,0 +1,34 @@
+
+digraph {
+	compound = "true"
+	newrank = "true"
+	subgraph "root" {
+		"[root] @workspace/api#build" -> "[root] @workspace/auth#build"
+		"[root] @workspace/api#build" -> "[root] @workspace/database#build"
+		"[root] @workspace/api#build" -> "[root] @workspace/typescript-config#build"
+		"[root] @workspace/auth#build" -> "[root] @workspace/database#build"
+		"[root] @workspace/auth#build" -> "[root] @workspace/env#build"
+		"[root] @workspace/auth#build" -> "[root] @workspace/typescript-config#build"
+		"[root] @workspace/database#build" -> "[root] @workspace/env#build"
+		"[root] @workspace/database#build" -> "[root] @workspace/typescript-config#build"
+		"[root] @workspace/env#build" -> "[root] @workspace/typescript-config#build"
+		"[root] @workspace/eslint-config#build" -> "[root] ___ROOT___"
+		"[root] @workspace/typescript-config#build" -> "[root] ___ROOT___"
+		"[root] @workspace/ui#build" -> "[root] @workspace/eslint-config#build"
+		"[root] @workspace/ui#build" -> "[root] @workspace/typescript-config#build"
+		"[root] admin#build" -> "[root] @workspace/eslint-config#build"
+		"[root] admin#build" -> "[root] @workspace/typescript-config#build"
+		"[root] admin#build" -> "[root] @workspace/ui#build"
+		"[root] server#build" -> "[root] @workspace/api#build"
+		"[root] server#build" -> "[root] @workspace/auth#build"
+		"[root] server#build" -> "[root] @workspace/env#build"
+		"[root] server#build" -> "[root] @workspace/typescript-config#build"
+		"[root] web#build" -> "[root] @workspace/api#build"
+		"[root] web#build" -> "[root] @workspace/auth#build"
+		"[root] web#build" -> "[root] @workspace/env#build"
+		"[root] web#build" -> "[root] @workspace/eslint-config#build"
+		"[root] web#build" -> "[root] @workspace/typescript-config#build"
+		"[root] web#build" -> "[root] @workspace/ui#build"
+	}
+}
+

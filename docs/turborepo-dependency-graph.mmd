@@ -1,0 +1,35 @@
+flowchart LR
+    admin["admin"] --> ui["@workspace/ui"]
+    admin --> eslintConfig["@workspace/eslint-config"]
+    admin --> tsConfig["@workspace/typescript-config"]
+
+    server["server"] --> api["@workspace/api"]
+    server --> auth["@workspace/auth"]
+    server --> env["@workspace/env"]
+    server --> tsConfig
+
+    web["web"] --> api
+    web --> auth
+    web --> env
+    web --> ui
+    web --> eslintConfig
+    web --> tsConfig
+
+    api --> auth
+    api --> database["@workspace/database"]
+    api --> tsConfig
+
+    auth --> database
+    auth --> env
+    auth --> tsConfig
+
+    database --> env
+    database --> tsConfig
+
+    env --> tsConfig
+
+    ui --> eslintConfig
+    ui --> tsConfig
+
+    eslintConfig
+    tsConfig
