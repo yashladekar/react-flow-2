@@ -2,7 +2,7 @@ import prisma from "@workspace/database";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { publicProcedure, router } from "../index";
+import { publicProcedure, router } from "../index.js";
 
 export const todoRouter = router({
     getAll: publicProcedure.query(async () => {

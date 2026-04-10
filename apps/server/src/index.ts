@@ -8,27 +8,35 @@ import cors from "cors";
 import express from "express";
 
 const app = express();
+const allowedOrigins = new Set([env.CORS_ORIGIN, "http://localhost:3002"]);
+
+app.use(express.json());
 
 app.use(
     cors({
-        origin: env.CORS_ORIGIN,
+        origin(origin, callback) {
+            if (!origin || allowedOrigins.has(origin)) {
+                callback(null, true);
+                return;
+            }
+
+            callback(new Error("Origin not allowed by CORS"));
+        },
+        credentials: true,
         methods: ["GET", "POST", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
-        credentials: true,
-    }),
+    })
 );
 
-app.all("/api/auth{/*path}", toNodeHandler(auth));
+app.use("/api/auth", toNodeHandler(auth));
 
 app.use(
     "/trpc",
     createExpressMiddleware({
         router: appRouter,
         createContext,
-    }),
+    })
 );
-
-app.use(express.json());
 
 app.get("/", (_req, res) => {
     res.status(200).send("OK");

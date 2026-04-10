@@ -3,6 +3,8 @@ import { env } from "@workspace/env/server";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 
+const trustedOrigins = Array.from(new Set([env.CORS_ORIGIN, "http://localhost:3002"]));
+
 export function createAuth() {
     const prisma = createPrismaClient();
 
@@ -10,12 +12,16 @@ export function createAuth() {
         database: prismaAdapter(prisma, {
             provider: "postgresql",
         }),
-        trustedOrigins: [env.CORS_ORIGIN],
+        trustedOrigins,
         emailAndPassword: {
             enabled: true,
+            minPasswordLength: 5,
         },
         secret: env.BETTER_AUTH_SECRET,
         baseURL: env.BETTER_AUTH_URL,
+        cookies: {
+            secure: false,
+        },
     });
 }
 

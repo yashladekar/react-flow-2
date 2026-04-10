@@ -1,6 +1,6 @@
 "use client";
 
-import type { AppRouter } from "@workspace/api/routers/index";
+import type { AppRouter } from "@workspace/api";
 import { env } from "@workspace/env/web";
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
