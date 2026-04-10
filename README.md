@@ -49,6 +49,24 @@ pnpm dev
 
 The Express server runs on http://localhost:3000, the web app on http://localhost:3001, and the admin app on http://localhost:3002.
 
+## Better Auth Studio
+
+This repo uses Better Auth from a workspace package, so Better Auth Studio needs an explicit root config wrapper.
+
+Create the server env file first:
+
+```bash
+cp apps/server/.env.example apps/server/.env
+```
+
+Then start the studio:
+
+```bash
+pnpm auth:studio
+```
+
+The script starts Better Auth Studio on http://localhost:3003 using the auth config exported through `./auth.ts`.
+
 Stop the local database when you are done:
 
 ```bash
@@ -61,6 +79,7 @@ docker compose down
 pnpm dev
 pnpm dev:server
 pnpm dev:web
+pnpm auth:studio
 pnpm graph
 pnpm graph:build
 pnpm typecheck
