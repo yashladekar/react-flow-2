@@ -9,6 +9,12 @@ model User {
     sessions      Session[]
     accounts      Account[]
 
+    memberships   Membership[]
+    projectAccess ProjectMembership[]
+    createdProjects Project[] @relation("ProjectCreator")
+    createdTodos    Todo[]    @relation("TodoCreator")
+    auditLogs       AuditLog[]
+
     @@unique([email])
     @@map("user")
 }
@@ -46,6 +52,7 @@ model Account {
     updatedAt             DateTime  @updatedAt
 
     @@index([userId])
+    @@unique([providerId, accountId])
     @@map("account")
 }
 
@@ -59,4 +66,150 @@ model Verification {
 
     @@index([identifier])
     @@map("verification")
+}
+
+model Organization {
+    id   String @id @default(uuid())
+    name String
+    slug String @unique
+
+    planId String
+    plan   Plan   @relation(fields: [planId], references: [id])
+
+    members  Membership[]
+    projects Project[]
+    projectMemberships ProjectMembership[]
+    roles    Role[]
+    todos    Todo[]
+    auditLogs AuditLog[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    deletedAt DateTime?
+}
+
+model Plan {
+    id    String @id @default(uuid())
+    name  String // FREE, BASIC, PRO
+    price Float
+
+    maxUsers    Int
+    maxProjects Int
+
+    organizations Organization[]
+}
+
+model Membership {
+    id String @id @default(uuid())
+
+    userId         String
+    organizationId String
+    roleId         String
+
+    user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+    organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    role         Role         @relation(fields: [roleId, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+    status String @default("active")
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([userId, organizationId])
+    @@index([organizationId])
+    @@index([roleId, organizationId])
+}
+
+model Role {
+    id   String @id @default(uuid())
+    organizationId String
+    organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+    name String // ADMIN, MEMBER, VIEWER
+
+    permissions RolePermission[]
+    memberships Membership[]
+
+    @@unique([organizationId, name])
+    @@unique([id, organizationId])
+    @@index([organizationId])
+}
+
+model Permission {
+    id              String           @id @default(uuid())
+    action          String // CREATE_PROJECT, DELETE_TASK
+    rolePermissions RolePermission[]
+}
+
+model RolePermission {
+    roleId       String
+    permissionId String
+
+    role       Role       @relation(fields: [roleId], references: [id])
+    permission Permission @relation(fields: [permissionId], references: [id])
+
+    @@id([roleId, permissionId])
+}
+
+model Project {
+    id   String @id @default(uuid())
+    name String
+
+    organizationId String
+    organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+    members ProjectMembership[]
+    todos   Todo[]
+
+    createdById String
+    createdBy   User   @relation("ProjectCreator", fields: [createdById], references: [id], onDelete: Restrict)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    deletedAt DateTime?
+
+    @@unique([id, organizationId])
+    @@index([organizationId])
+    @@index([organizationId, createdAt])
+}
+
+model ProjectMembership {
+    id String @id @default(uuid())
+
+    organizationId String
+    projectId String
+    userId    String
+
+    role String // PROJECT_ADMIN, CONTRIBUTOR, VIEWER
+
+    organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    project      Project      @relation(fields: [projectId, organizationId], references: [id, organizationId], onDelete: Cascade)
+    user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([organizationId, projectId, userId])
+    @@index([organizationId, userId])
+    @@index([projectId])
+}
+
+model AuditLog {
+    id String @id @default(uuid())
+
+    organizationId String
+    userId         String?
+
+    action       String
+    resourceType String
+    resourceId   String?
+    metadata     Json?
+
+    ipAddress String?
+    userAgent String?
+
+    organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    createdAt DateTime @default(now())
+
+    @@index([organizationId, createdAt])
+    @@index([userId, createdAt])
+    @@index([resourceType, resourceId])
 }

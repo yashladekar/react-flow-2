@@ -25,8 +25,17 @@ const trpcClient = createTRPCClient<AppRouter>({
     httpBatchLink({
       url: `${env.NEXT_PUBLIC_SERVER_URL}/trpc`,
       fetch(url, options) {
+        const headers = new Headers(options?.headers);
+        if (typeof window !== "undefined") {
+          const activeOrganizationId = window.localStorage.getItem("activeOrganizationId");
+          if (activeOrganizationId) {
+            headers.set("x-organization-id", activeOrganizationId);
+          }
+        }
+
         return fetch(url, {
           ...options,
+          headers,
           credentials: "include",
         });
       },

@@ -25,3 +25,20 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
         },
     });
 });
+
+export const tenantProcedure = protectedProcedure.use(({ ctx, next }) => {
+    if (!ctx.organizationId) {
+        throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "No active tenant selected",
+        });
+    }
+
+    return next({
+        ctx: {
+            ...ctx,
+            session: ctx.session,
+            organizationId: ctx.organizationId,
+        },
+    });
+});

@@ -2,6 +2,7 @@ import { createPrismaClient } from "@workspace/database";
 import { env } from "@workspace/env/server";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { organization } from "better-auth/plugins/organization";
 
 const trustedOrigins = Array.from(new Set([env.CORS_ORIGIN, "http://localhost:3002"]));
 
@@ -22,6 +23,9 @@ export function createAuth() {
         cookies: {
             secure: false,
         },
+        plugins: [
+            organization(),
+        ],
     });
 }
 

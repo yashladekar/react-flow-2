@@ -2,7 +2,21 @@ model Todo {
     id        Int      @id @default(autoincrement())
     text      String
     completed Boolean  @default(false)
+    organizationId String
+    projectId      String?
+    createdById    String?
+
+    organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    project      Project?     @relation(fields: [projectId], references: [id], onDelete: SetNull)
+    createdBy    User?        @relation("TodoCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
     createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    deletedAt DateTime?
+
+    @@index([organizationId, createdAt])
+    @@index([organizationId, completed])
+    @@index([projectId])
 
     @@map("todo")
 }
